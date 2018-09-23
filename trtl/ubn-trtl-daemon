@@ -1,0 +1,28 @@
+FROM ubuntu:16.04
+# Default git repository
+ENV GIT_REPOSITORY https://github.com/
+
+# Install packages
+RUN apt-get -y update && apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev librocksdb-dev libreadline-dev dumb-init
+RUN git clone $GIT_REPOSITORY
+
+# Build
+RUN mkdir -p /trtl/build
+WORKDIR /trtl/build
+RUN cmake ..
+RUN make -j $(nproc)
+RUN mv ./src/* /usr/local/bin/ \
+&& rm -rf /trtl \
+&& apt-get purge -y -qq build-essential cmake git \
+&& apt-get clean -qq
+
+# Create Limited User
+RUN useradd -rm -u 999 limited
+USER limited
+
+EXPOSE 11897
+VOLUME /home/limited/.TurtleCoin
+
+# Run under dumbinit
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/usr/local/bin/TurtleCoind"]
