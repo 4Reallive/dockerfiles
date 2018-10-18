@@ -1,0 +1,40 @@
+version: '3.2'
+
+services:
+  node1:
+    # Change this to test later
+    image: 4reallive/turtlecoind
+    container_name: krang-node1
+    ports:
+      - "11897"
+    volumes:
+      - turtlecoind
+    networks:
+      testnet:
+        ipv4_address: 172.16.0.11
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+
+#  node2:
+#  #    image: funkypenguin/turtlecoin
+#  #    container_name: turtletest-node2
+#  #    networks:
+#  #      testnet:
+#  #        ipv4_address: 172.16.0.12
+#    
+#    #  node3:
+#    #    image: funkypenguin/turtlecoin
+#    #    container_name: turtletest-node3
+#    #    networks:
+#    #      testnet:
+#    #        ipv4_address: 172.16.0.13
+#
+networks:
+  testnet:
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
+
+volumes:
+  turtlecoind:

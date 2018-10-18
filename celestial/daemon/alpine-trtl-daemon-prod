@@ -1,0 +1,60 @@
+# Thanks to funkypengium for inspiration
+# join the Geek's Kitchen on discord
+
+FROM debian:9 as builder
+
+ARG BRANCH=v0.8.3
+ENV BRANCH=${BRANCH}
+
+# Install build dependencies
+# checkout the latest tag
+# build and install
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    gdb \
+    python-dev \
+    gcc \
+    g++\
+    git \
+    cmake \
+    libboost-all-dev \
+    librocksdb-dev && \
+    git clone --branch $BRANCH https://github.com/turtlecoin/turtlecoin.git /opt/turtlecoin && \
+    cd /opt/turtlecoin && \
+    mkdir build && \
+    cd build && \
+    export CXXFLAGS="-w -std=gnu++11" && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-fassociative-math" -DCMAKE_CXX_FLAGS="-fassociative-math" -DSTATIC=true -DDO_TESTS=OFF .. && \
+    make -j$(nproc) && \
+    mkdir -p /tmp/tbin && \
+    find /opt/turtlecoin/build/src -type f -perm /a+x -exec cp {} /tmp/tbin \;
+
+#FROM alpine:3.8
+
+# Use this for testing. Build out glibc install into this file or one that is maintained 
+FROM frolvlad/alpine-glibc:alpine-3.8_glibc-2.28
+
+# Now we DO need these, for the auto-labeling of the image
+ARG BUILD_DATE
+ARG VCS_REF
+
+# Create limited user and switch
+RUN addgroup -S limited && adduser -S limited -G limited 
+
+#RUN apk add --no-cache libc6-compat
+
+COPY --from=builder /tmp/tbin/* /usr/local/bin/
+
+WORKDIR /usr/local/bin
+
+# OPTIONAL: Checkpoints increase size and time to deploy (~60MB)
+#ADD https://github.com/turtlecoin/checkpoints/raw/master/checkpoints.csv /tmp/checkpoints/
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 /usr/local/bin/dumb-init
+RUN chmod 700 dumb-init && chown limited dumb-init
+USER limited
+
+# Use dumbinit as first process
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+CMD ["/usr/local/bin/TurtleCoind"]
