@@ -1,0 +1,35 @@
+FROM node
+# Default git repository
+ENV GIT_REPOSITORY https://github.com/turtlecoin/turtlecoin
+
+# Install packages
+RUN apt-get -y update && apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev librocksdb-dev libreadline-dev
+RUN git clone $GIT_REPOSITORY
+
+# Build
+RUN mkdir -p /turtlecoin/build
+WORKDIR /turtlecoin/build
+RUN cmake ..
+RUN make -j $(nproc)
+RUN find /turtlecoin/build/src -type f -perm /a+x -exec cp {} /usr/local/bin \;
+RUN rm -rf /turtlecoin
+RUN apt-get purge -y -qq build-essential cmake git && apt-get clean -qq
+
+# Node HA stuff
+WORKDIR /opt
+RUN git clone https://github.com/turtlecoin/turtlecoind-ha.git
+RUN cd turtlecoind-ha
+RUN cp /usr/local/bin/TurtleCoind .
+RUN npm install & node service.js
+
+# Create Limited User
+RUN useradd -rm -u 999 limited
+USER limited
+RUN mkdir /home/limited/.TurtleCoin
+EXPOSE 11897
+EXPOSE 11898
+VOLUME /home/limited/.TurtleCoin
+
+# Run under dumbinit
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/usr/local/bin/TurtleCoind"]
