@@ -6,9 +6,12 @@ services:
     image: 4reallive/turtlecoind
     container_name: krang-node1
     ports:
-      - "11897"
+      - "11897:11897"
+      - "11898:11898"
     volumes:
-      - turtlecoind
+      - type: volume
+        source: turtlecoind
+        target: /home/limited/TurtleCoin
     networks:
       testnet:
         ipv4_address: 172.16.0.11

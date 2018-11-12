@@ -57,4 +57,4 @@ USER limited
 
 # Use dumbinit as first process
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
-CMD ["/usr/local/bin/TurtleCoind"]
+CMD ["/usr/local/bin/TurtleCoind",  "--rpc-bind-ip", "0.0.0.0"]
