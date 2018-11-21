@@ -3,15 +3,16 @@ version: '3.2'
 services:
   node1:
     # Change this to test later
-    image: 4reallive/turtlecoind
-    container_name: krang-node1
+    image: 4reallive/celestiald
+    container_name: celest-body1
     ports:
-      - "11897"
+      - "27337"
+      - "27337"
     volumes:
-      - turtlecoind
+      - celestiald
     networks:
       testnet:
-        ipv4_address: 172.16.0.11
+        ipv4_address: 172.17.0.11
     deploy:
       restart_policy:
         condition: unless-stopped
@@ -37,4 +38,4 @@ networks:
         - subnet: 172.16.0.0/24
 
 volumes:
-  turtlecoind:
+  celestiald:

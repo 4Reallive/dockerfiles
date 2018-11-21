@@ -1,18 +1,18 @@
 FROM ubuntu:18.04
 # Default git repository
-ENV GIT_REPOSITORY https://github.com/CelestialCash/Celestial
+ENV GIT_REPOSITORY https://github.com/CelestialCash/testnet2
 
 # Install packages
 RUN apt-get -y update && apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev librocksdb-dev libreadline-dev dumb-init
 RUN git clone $GIT_REPOSITORY
 
 # Build
-RUN mkdir -p /Celestial/build
-WORKDIR /Celestial/build
+RUN mkdir -p /testnet2/build
+WORKDIR /testnet2/build
 RUN cmake ..
 RUN make -j $(nproc)
-RUN find /Celestial/build/src -type f -perm /a+x -exec cp {} /usr/local/bin \;
-RUN rm -rf /Celestial
+RUN find /testnet2/build/src -type f -perm /a+x -exec cp {} /usr/local/bin \;
+RUN rm -rf /testnet2
 RUN apt-get purge -y -qq build-essential cmake git && apt-get clean -qq
 
 # Create Limited User

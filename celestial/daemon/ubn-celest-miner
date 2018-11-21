@@ -18,10 +18,10 @@ RUN apt-get purge -y -qq build-essential cmake git && apt-get clean -qq
 # Create Limited User
 RUN useradd -rm -u 999 limited
 USER limited
-RUN mkdir /home/limited/.Celestiald
-EXPOSE 27337
-VOLUME /home/limited/.Celestiald
+#RUN mkdir /home/limited/.Celestiald
+#EXPOSE 27337
+#VOLUME /home/limited/.Celestiald
 
 # Run under dumbinit
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["/usr/local/bin/Celestiald", "--fee-amount", "100", "--fee-address", "CGEhH35QpqvhXgyfBhHy6VUpxSkxEUGpghVKLzMEMdqDbcoK1G32XoxbJPER8yHFn1ByNGD9oncT4DeGQBrpf9i9UZqYS4J ", "--rpc-bind-ip", "0.0.0.0"]
+CMD ["/usr/local/bin/miner", "--address", "CGEhH35QpqvhXgyfBhHy6VUpxSkxEUGpghVKLzMEMdqDbcoK1G32XoxbJPER8yHFn1ByNGD9oncT4DeGQBrpf9i9UZqYS4J ", "--daemon-host", "celest.4rl.io", "--log-level", "3"]
