@@ -1,0 +1,21 @@
+FROM ubuntu:16.04
+
+RUN apt-get -y update && apt-get install -y git build-essential cmake libuv1-dev libmicrohttpd-dev wget
+RUN useradd -rm -u 999 limited
+RUN mkdir /opt/git
+WORKDIR /opt/git
+RUN git clone https://github.com/xmrig/xmrig.git
+RUN sed -i 's/constexpr const int kDefaultDonateLevel = 5;/constexpr const int kDefaultDonateLevel = 0;/' /opt/git/xmrig/src/donate.h
+RUN sed -i 's/constexpr const int kMinimumDonateLevel = 1;/constexpr const int kMinimumDonateLevel = 0;/' /opt/git/xmrig/src/donate.h
+RUN mkdir /opt/git/xmrig/build
+WORKDIR /opt/git/xmrig/build
+RUN cmake ..
+RUN make -j$(nproc)
+#RUN wget https://github.com/xmrig/xmrig/releases/download/v2.6.0-beta3/xmrig-2.6.0-beta3-xenial-amd64.tar.gz
+#RUN tar xvf xmrig-2.6.0-beta3-xenial-amd64.tar.gz
+#WORKDIR /opt/git/xmrig-2.6.0-beta3
+RUN rm -f config.json
+COPY config.trtl.json config.json
+USER limited
+CMD ./xmrig -p $(hostname) 
+
