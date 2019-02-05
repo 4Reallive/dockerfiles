@@ -2,7 +2,7 @@
 # join the Geek's Kitchen on discord
 
 FROM debian:buster-slim as builder
-
+# start using these
 ARG BRANCH=v0.8.4
 ENV BRANCH=${BRANCH}
 
@@ -17,14 +17,14 @@ RUN apt update \
        gcc-8 \
        git \
        libboost-all-dev \
-       cmake \
-    && git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin /opt/turtlecoin \
-    && mkdir -p /opt/turtlecoin/build \
-    && cd /opt/turtlecoin/build \
+       cmake
+RUN git clone --single-branch --branch development https://github.com/xlscoin/excelsior /opt/xls \
+    && mkdir -p /opt/xls/build \
+    && cd /opt/xls/build \
     && cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. \
     && make -j$(nproc) \   
     && mkdir -p /tmp/build \
-    && find /opt/turtlecoin/build/src -type f -perm /a+x -exec cp {} /tmp/build \;
+    && find /opt/xls/build/src -type f -perm /a+x -exec cp {} /tmp/build \;
 
 #FROM alpine:3.8
 
@@ -45,12 +45,12 @@ COPY --from=builder /tmp/build/* /usr/local/bin/
 WORKDIR /usr/local/bin
 
 # OPTIONAL: Checkpoints increase size and time to deploy (~60MB)
-ADD https://github.com/turtlecoin/checkpoints/raw/master/checkpoints.csv /usr/local/bin
+# ADD https://github.com/xls/checkpoints/raw/master/checkpoints.csv /usr/local/bin
 
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 /usr/local/bin/dumb-init
-RUN chmod 700 dumb-init checkpoints.csv && chown limited dumb-init checkpoints.csv
+RUN chmod 700 dumb-init && chown limited dumb-init 
 USER limited
 
 # Use dumbinit as first process
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
-CMD ["/usr/local/bin/TurtleCoind",  "--rpc-bind-ip", "0.0.0.0", "--load-checkpoints", "checkpoints.csv"]
+CMD ["/usr/local/bin/Excelsiord", "--rpc-bind-ip", "0.0.0.0"]
