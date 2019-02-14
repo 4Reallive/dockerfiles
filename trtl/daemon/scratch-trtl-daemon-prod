@@ -1,0 +1,40 @@
+# Thanks to funkypengium for inspiration
+# join the Geek's Kitchen on discord
+
+FROM debian:buster-slim as builder
+
+ARG BRANCH=v0.8.4
+ENV BRANCH=${BRANCH}
+
+# Install build dependencies
+# checkout the latest tag
+# build and install
+   
+RUN apt update \ 
+    && apt install -y \
+       build-essential \
+       g++-8 \
+       gcc-8 \
+       git \
+       libboost-all-dev \
+       cmake \
+    && git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin /opt/turtlecoin \
+    && mkdir -p /opt/turtlecoin/build \
+    && cd /opt/turtlecoin/build \
+    && cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. \
+    && make -j$(nproc) \   
+    && mkdir -p /tmp/build \
+    && find /opt/turtlecoin/build/src -type f -perm /a+x -exec cp {} /tmp/build \;
+
+#FROM alpine:3.8
+
+# Use this for testing. Build out glibc install into this file or one that is maintained 
+FROM scratch
+
+COPY --from=builder /tmp/build/* /
+
+# OPTIONAL: Checkpoints increase size and time to deploy (~60MB)
+ADD https://github.com/turtlecoin/checkpoints/raw/master/checkpoints.csv /
+
+# Use dumbinit as first process
+ENTRYPOINT ["/TurtleCoind",  "--rpc-bind-ip", "0.0.0.0", "--load-checkpoints", "checkpoints.csv"]
