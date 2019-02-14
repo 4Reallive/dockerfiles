@@ -13,11 +13,11 @@
     "threads": null,        // number of miner threads
     "pools": [
         {
-            "url": "trtl.heigh-ho.funkypenguin.co.nz:5555", // URL of mining server
-            "user": "TRTLuzj8yzQ6ZZ5skStmeQALGpnUxtgN7dmm1V1egkYycoB7hnidC4RCn2ZxgiqDSZDoV8wmiXgqBQvNcsegnwM2HQkeFtoSycU",
+            "url": "cryptonote.social:4444", // URL of mining server
+            "user": "TRTLuzj8yzQ6ZZ5skStmeQALGpnUxtgN7dmm1V1egkYycoB7hnidC4RCn2ZxgiqDSZDoV8wmiXgqBQvNcsegnwM2HQkeFtoSycU.zara",
             "keepalive": true,               // send keepalived for prevent timeout (need pool support)
             "nicehash": false,               // enable nicehash/xmrig-proxy support
-            "variant": 0
+            "variant": 1
         }
 	]
 }
