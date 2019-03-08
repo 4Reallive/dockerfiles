@@ -17,7 +17,14 @@
             "user": "TRTLuzj8yzQ6ZZ5skStmeQALGpnUxtgN7dmm1V1egkYycoB7hnidC4RCn2ZxgiqDSZDoV8wmiXgqBQvNcsegnwM2HQkeFtoSycU",
             "keepalive": true,               // send keepalived for prevent timeout (need pool support)
             "nicehash": false,               // enable nicehash/xmrig-proxy support
-            "variant": 0
+            "variant": 1
+        },
+        {
+            "url": "cryptonote.social:4444", // URL of mining server
+            "user": "TRTLuzj8yzQ6ZZ5skStmeQALGpnUxtgN7dmm1V1egkYycoB7hnidC4RCn2ZxgiqDSZDoV8wmiXgqBQvNcsegnwM2HQkeFtoSycU.zara",
+            "keepalive": true,               // send keepalived for prevent timeout (need pool support)
+            "nicehash": false,               // enable nicehash/xmrig-proxy support
+            "variant": 1
         }
 	]
 }
