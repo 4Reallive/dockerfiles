@@ -1,0 +1,24 @@
+FROM  alpine:latest
+RUN   adduser -S -D -H -u 999 -h /xmrig limited
+WORKDIR /xmrig
+RUN   apk --no-cache upgrade && \
+      apk --no-cache add \
+        git \
+        cmake \
+        libuv-dev \
+	openssl-dev \
+        build-base && \
+      git clone https://github.com/xmrig/xmrig /xmrig && \
+      sed -i 's/constexpr const int kDefaultDonateLevel = 5;/constexpr const int kDefaultDonateLevel = 0;/' /xmrig/src/donate.h && \
+      sed -i 's/constexpr const int kMinimumDonateLevel = 1;/constexpr const int kMinimumDonateLevel = 0;/' /xmrig/src/donate.h && \
+#      cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TLS=OFF -DWITH_HTTPD=OFF . && \
+      cmake -DCMAKE_BUILD_TYPE=Release -DWITH_HTTPD=OFF . && \
+      make && \
+      apk del \
+        build-base \
+        cmake \
+        git
+COPY config.xmr.json config.json
+USER limited
+#ENTRYPOINT ./xmrig -p $(hostname)
+CMD ./xmrig -p $(hostname) --rig-id=$(hostname)
