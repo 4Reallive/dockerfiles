@@ -1,4 +1,10 @@
-FROM node:8-alpine
+## Build with 'docker build . -t xxxxxx'
+## Replace xxxxxx with your imagename above and below
+## Run with 'docker run -d -p x:80 --restart=unless-stopped --name=trtl-resolver xxxxxx'
+## You can choose your port   ^ here.                                 imagename  ^ here
+## TRTL power
+
+FROM node:lts-alpine
 
 RUN apk add git && \
     git clone https://github.com/turtlecoin/.trtl-resolver && \
