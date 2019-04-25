@@ -6,7 +6,7 @@
 
 FROM node:lts-alpine
 
-RUN apk add git && \
+RUN apk add --no-cache git && \
     git clone https://github.com/turtlecoin/.trtl-resolver && \
     cd .trtl-resolver && npm install && \
     apk del git
