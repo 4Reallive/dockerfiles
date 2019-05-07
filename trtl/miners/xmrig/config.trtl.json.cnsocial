@@ -15,8 +15,9 @@
         {
             "url": "cryptonote.social:4444", // URL of mining server
             "user": "TRTLuzj8yzQ6ZZ5skStmeQALGpnUxtgN7dmm1V1egkYycoB7hnidC4RCn2ZxgiqDSZDoV8wmiXgqBQvNcsegnwM2HQkeFtoSycU.zara/info@4real.live",
+            "pass": "wallet=LDdDhWSFYpeGQD38hsBcM1Ly2WvVZNXgebfUERGZm6uwg4Lj6cxTF8s9uoUx9FRXsAALmQ13QX2x7KaijyAZoYpL3k16sHK",
             "keepalive": true,               // send keepalived for prevent timeout (need pool support)
-            "use-tls" : true,                   // enable tls for pool communication (need pool support)
+            "use-tls" : false,                   // enable tls for pool communication (need pool support)
             "nicehash": false,               // enable nicehash/xmrig-proxy support
             "variant": 1
         },

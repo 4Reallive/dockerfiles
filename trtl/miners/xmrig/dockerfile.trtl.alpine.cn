@@ -21,4 +21,4 @@ RUN   apk --no-cache upgrade && \
 COPY config.trtl.json.cnsocial config.json
 USER limited
 #ENTRYPOINT ./xmrig -p $(hostname)
-CMD ./xmrig --rig-id=$(hostname) --pass="wallet=LDdDhWSFYpeGQD38hsBcM1Ly2WvVZNXgebfUERGZm6uwg4Lj6cxTF8s9uoUx9FRXsAALmQ13QX2x7KaijyAZoYpL3k16sHK"
+CMD ./xmrig --rig-id=$(hostname) 
