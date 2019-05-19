@@ -1,0 +1,64 @@
+FROM debian:buster-slim as builder
+
+# Install build dependencies
+# build and install
+   
+RUN apt update \ 
+    && apt install -y \
+       build-essential \
+       g++-8 \
+       gcc-8 \
+       git \
+       libboost-all-dev \
+       cmake \
+       pkg-config \
+       libboost-all-dev \
+       libssl-dev libzmq3-dev \
+       libunbound-dev \
+       libsodium-dev \
+       libunwind8-dev \
+       liblzma-dev \
+       libreadline6-dev \
+       libldns-dev \
+       libexpat1-dev \
+       doxygen \
+       graphviz \
+       libpgm-dev
+RUN    git clone https://github.com/ryo-currency/ryo-currency /opt/ryo \
+    && cd /opt/ryo \
+    && make -j$(nproc) \   
+    && mkdir -p /tmp/build \
+    && find /opt/ryo/build/release/bin -type f -perm /a+x -exec cp {} /tmp/build \;
+
+FROM debian:buster-slim
+# Create limited user and switch
+RUN groupadd -r -g 999 limited && useradd -r -u 999 limited -g limited 
+
+RUN    apt update && \
+       apt install -y \
+       libboost-all-dev \
+       pkg-config \
+       libboost-all-dev \
+       libssl-dev libzmq3-dev \
+       libunbound-dev \
+       libsodium-dev \
+       libunwind8-dev \
+       liblzma-dev \
+       libreadline6-dev \
+       libldns-dev \
+       libexpat1-dev \
+       doxygen \
+       graphviz \
+       libpgm-dev
+
+COPY --from=builder /tmp/build/* /usr/local/bin/
+
+WORKDIR /usr/local/bin
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 /usr/local/bin/dumb-init
+RUN chmod 700 dumb-init && chown limited dumb-init 
+USER limited
+
+# Use dumbinit as first process
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+CMD ["/usr/local/bin/ryod",  "--rpc-bind-ip", "0.0.0.0", "--confirm-external-bind"]

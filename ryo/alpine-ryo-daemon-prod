@@ -1,0 +1,53 @@
+FROM debian:buster-slim as builder
+
+# Install build dependencies
+# build and install
+   
+RUN apt update \ 
+    && apt install -y \
+       build-essential \
+       g++-8 \
+       gcc-8 \
+       git \
+       libboost-all-dev \
+       cmake \
+       pkg-config \
+       libboost-all-dev \
+       libssl-dev libzmq3-dev \
+       libunbound-dev \
+       libsodium-dev \
+       libunwind8-dev \
+       liblzma-dev \
+       libreadline6-dev \
+       libldns-dev \
+       libexpat1-dev \
+       doxygen \
+       graphviz \
+       libpgm-dev
+RUN    git clone https://github.com/ryo-currency/ryo-currency /opt/ryo \
+    && cd /opt/ryo \
+    && make -j$(nproc) \   
+    && mkdir -p /tmp/build \
+    && find /opt/ryo/build/release/bin -type f -perm /a+x -exec cp {} /tmp/build \;
+
+#FROM alpine:3.8
+
+# Use this for testing. Build out glibc install into this file or one that is maintained 
+FROM frolvlad/alpine-glibc:alpine-3.9_glibc-2.29
+
+# Create limited user and switch
+RUN addgroup -S -g 998 limited && adduser -S -u 999 limited -G limited 
+
+RUN apk add --no-cache boost-dev libzmq
+
+COPY --from=builder /tmp/build/* /usr/local/bin/
+
+WORKDIR /usr/local/bin
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 /usr/local/bin/dumb-init
+RUN chmod 700 dumb-init && chown limited dumb-init 
+USER limited
+
+# Use dumbinit as first process
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+CMD ["/usr/local/bin/ryod",  "--rpc-bind-ip", "0.0.0.0"]
