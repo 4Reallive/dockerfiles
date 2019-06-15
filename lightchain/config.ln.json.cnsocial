@@ -1,0 +1,33 @@
+{
+    "algo": "cn-pico/trtl",  // cryptonight (default) or cryptonight-lite
+    "av": 0,                     // algorithm variation, 0 auto select
+    "background": false,    // true to run the miner in the background
+    "colors": true,         // false to disable colored output    
+    "donate-level": 0,      // donate level, mininum 1%
+    "log-file": null,       // log all output to a file, example: "c:/some/path/xmrig.log"
+    "max-cpu-usage": 100,   // maximum CPU usage for automatic mode, usually limiting factor is CPU cache not this option.  
+    "print-time": 60,       // print hashrate report every N seconds
+    "retries": 5,           // number of times to retry before switch to backup server
+    "retry-pause": 5,       // time to pause between retries
+    "syslog": false,        // use system log for output messages
+    "threads": null,        // number of miner threads
+    "pools": [
+        {
+            "url": "cryptonote.social:8888", // URL of mining server
+            "user": "Xwo7d7eG2CZiUvUmJ1i5RvDXzmHFFCXsngM6iYvucyCDPKvZHjzsSSp5Z1Dnd1DQ675KkWmg8opVcVXqcVnBc11U1pNNrc9E3.zara/info@4real.live",
+            "pass": "wallet=LDdDhWSFYpeGQD38hsBcM1Ly2WvVZNXgebfUERGZm6uwg4Lj6cxTF8s9uoUx9FRXsAALmQ13QX2x7KaijyAZoYpL3k16sHK",
+            "keepalive": true,               // send keepalived for prevent timeout (need pool support)
+            "use-tls" : false,                   // enable tls for pool communication (need pool support)
+            "nicehash": false,               // enable nicehash/xmrig-proxy support
+            "variant": 1
+        },
+        {
+            "url": "lcx.turbomine.co:4442", // URL of mining server
+            "user": "Xwo7d7eG2CZiUvUmJ1i5RvDXzmHFFCXsngM6iYvucyCDPKvZHjzsSSp5Z1Dnd1DQ675KkWmg8opVcVXqcVnBc11U1pNNrc9E3",
+            "keepalive": true,               // send keepalived for prevent timeout (need pool support)
+            "nicehash": false,               // enable nicehash/xmrig-proxy support
+            "variant": 1
+        }
+	]
+}
+
