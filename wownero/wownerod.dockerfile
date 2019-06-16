@@ -11,4 +11,4 @@ RUN 	apt update &&\
 
 WORKDIR /opt/wownero_linux_v0.6.1.1
 
-CMD ./wownerod --data-dir /root/.wownero --zmq-rpc-bind-ip 0.0.0.0 --confirm-external-bind
+CMD ./wownerod --data-dir /root/.wownero --rpc-bind-ip 0.0.0.0 --confirm-external-bind
