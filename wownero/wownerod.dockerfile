@@ -1,5 +1,8 @@
 FROM ubuntu:19.04
 
+EXPOSE 34568
+EXPOSE 34567
+
 WORKDIR /opt
 RUN 	apt update &&\
 	apt install -y wget &&\
@@ -8,4 +11,4 @@ RUN 	apt update &&\
 
 WORKDIR /opt/wownero_linux_v0.6.1.1
 
-CMD ./wownerod
+CMD ./wownerod --data-dir /root/.wownero --zmq-rpc-bind-ip 0.0.0.0 --confirm-external-bind
