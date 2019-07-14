@@ -9,4 +9,4 @@ RUN 	apt update &&\
 
 WORKDIR /opt/wownero_Linux_v0.6.1.2
 
-CMD ./wownerod --start-mining WW43qYuCNZJW59wontMpKNSAJ3gZCAGkkSmko9KDSVPyQAsmF28Ter6htFiZK1atQujaZPLaYqMCZNascn1jm7LW38zcaRksf --mining-threads $(nproc)
+CMD ./wownerod --start-mining Wo3MXGE88V2bCRoZrosX6deSj5wT9ZdSyicTe4Hn4VGgDRWtUBbw8YG4B7m5YvcTzdiSiapjaHQKH79xFgPSPH582GqiY7mj9 --mining-threads $(nproc)
