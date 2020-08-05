@@ -29,10 +29,10 @@ RUN apt update \
 RUN cd /opt \
     && git clone -b master https://github.com/aeonix/aeon \
     && cd aeon && git submodule init && git submodule update \
-    && git checkout master \
-    && make -release-static -j$(nproc)
+    && git checkout v0.13.1.0-aeon \
+    && make -release-static -j $(nproc)
 RUN mkdir -p /tmp/build \
-    && find /opt/aeon/build/Linux/master/release/bin -type f -perm /a+x -exec cp {} /tmp/build \;
+    && find /opt/aeon/build/Linux/_HEAD_detached_at_v0.13.1.0-aeon_/release/bin -type f -perm /a+x -exec cp {} /tmp/build \;
 
 #FROM alpine:3.8
 

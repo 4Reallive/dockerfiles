@@ -1,4 +1,4 @@
-FROM debian:buster-slim as builder
+FROM debian:buster-slim
 
 # Install build dependencies
 # checkout the latest tag
@@ -27,39 +27,13 @@ RUN apt update \
        libnorm-dev
 
 RUN cd /opt \
-    && git clone -b master https://github.com/aeonix/aeon \
+    && git clone https://github.com/aeonix/aeon \
     && cd aeon && git submodule init && git submodule update \
-    && git checkout master \
+    && git checkout v0.13.1.0-aeon \
     && make -j $(nproc)
-RUN mkdir -p /tmp/build \
-    && find /opt/aeon/build/Linux/master/release/bin -type f -perm /a+x -exec cp {} /tmp/build \;
+RUN find /opt/aeon/build/Linux/_HEAD_detached_at_v0.13.1.0-aeon_/release/bin -type f -perm /a+x -exec cp {} /usr/local/bin \;
 
-FROM debian:buster-slim
-
-# Use this for testing. Build out glibc install into this file or one that is maintained 
-
-# Create limited user and switch
-RUN groupadd -r -g 998 limited && useradd -r -u 999 limited -g limited 
-
-RUN apt update \
-    && apt install -y \
-       libboost-all-dev \
-       libssl-dev \
-       libzmq3-dev \
-       libunbound-dev \
-       libsodium-dev \
-       libunwind-dev \
-       liblzma-dev \
-       libreadline-dev \
-       libldns-dev \
-       libexpat1-dev \
-       doxygen \
-       graphviz \
-       libpcsclite-dev \
-       libpgm-dev \
-       libnorm-dev
-
-COPY --from=builder /tmp/build/* /usr/local/bin/
+RUN groupadd -r -g 998 limited && useradd -r -m -u 999 limited -g limited 
 
 WORKDIR /usr/local/bin
 
@@ -72,4 +46,4 @@ USER limited
 
 # Use dumbinit as first process
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
-CMD ["/usr/local/bin/aeond",  "--rpc-bind-ip", "0.0.0.0"]
+CMD ["/usr/local/bin/aeond"], "--rpc-bind-ip", "0.0.0.0"]
